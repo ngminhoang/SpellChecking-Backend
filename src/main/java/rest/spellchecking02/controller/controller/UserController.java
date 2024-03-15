@@ -12,6 +12,8 @@ import rest.spellchecking02.dto.Mapper;
 import rest.spellchecking02.service.service.AccountService;
 import rest.spellchecking02.service.serviceInterface.AccountServiceInterface;
 
+import java.util.Optional;
+
 @RestController
 public class UserController implements UserControllerInterface {
     @Autowired
@@ -20,13 +22,13 @@ public class UserController implements UserControllerInterface {
     private Mapper mapper;
 
     public ResponseEntity<AccountDTOrs> getInfo(@AuthenticationPrincipal Account user) {
-        var data = service.read(user.getId());
+        Optional<Account> data = service.read(user.getId());
         return data.map(account -> ResponseEntity.ok(mapper.fromAccountToAccountDTOrs(account)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     public ResponseEntity<Boolean> updateInfo(@RequestBody AccountDTOrq userUpdate, @AuthenticationPrincipal Account user) {
-        var data = service.read(user.getId());
+        Optional<Account> data = service.read(user.getId());
         return data.map(account -> ResponseEntity.ok(service.update(account.getId(), userUpdate)))
                 .orElse(ResponseEntity.notFound().build());
     }
